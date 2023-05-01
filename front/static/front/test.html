@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-slim-tabs@0.3.0/dist/vue-slim-tabs.js"></script>
+    <link rel="stylesheet"href="styles.css">
+  </head>
+
+  <body>
+    <div id="app">
+      <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/"><img src="logo.png" style="max-height: 70px" class="py-2 px-2"></a>
+        </div>
+        <div class="navbar-menu" id="nav-links">
+          <div class="navbar-end">
+            <a class="navbar-item" href="/sell">Sell</a>
+            <a class="navbar-item" href="/cart">Shopping cart($0)</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="section pt-4 pb-0">
+        <nav class="breadcrumb">
+        <ul>
+          <li><a>Главная</a></li>
+        </ul>
+        </nav>
+      </div>
+
+      <div class="section">
+        <ul>
+          <li v-for="data in elms">
+            <p></p>
+            <article class="media">
+              <figure class="media-left">
+                <img class="image is-64x64" src="{{data.photo}}">
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                <p>
+                  <strong>
+                    <a href="products/{{data.uuid}}" class="has-text-info"></a>
+                    <span class="tag is-small">#4</span>
+                  </strong>
+                  <br>
+                    [[data.description]] 
+                  <br>
+                  <small class="is-size-7">
+                    Submitted by: 
+                  </small>
+                </p>
+                </div>
+              </div>
+              <form method="post">
+                <div class="media-right">
+                  <span class="icon is-small">
+                    <i class="fa fa-chevron-up" v-on:click="update"></i>
+                    <strong class="has-text-info">10</strong>
+                  </span>
+                </div>
+              </form>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      Vue.use(vueSlimTabs);
+      const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+          elms: [
+            
+              { photo: "coffee.jpg", name: "coffee", uuid: "56cde817-3534-4824-bae9-62abe9cacbbc", user_name: "ivan", description: "yummy coffee" }, 
+            
+              { photo: "candy1.jpg", name: "JOLLY RANCHER", uuid: "a5afc1a0-4cf6-4608-8d4b-05e4dd1169eb", user_name: "Jolly Rancher Store", description: "Assorted Fruit Flavored Hard, Individually Wrapped Candy Bulk" }, 
+            
+              { photo: "phone.jpg", name: "Смартфон Tecno Camon 19 Neo", uuid: "a03933a5-f0e9-4b58-9877-73edcaaf82a4", user_name: "Tecno", description: "6/128 ГБ, черный" }, 
+            
+              { photo: "6410530669.webp", name: "Таблетки для посудомоечной машины", uuid: "4fedc2b2-fc9f-4226-8529-5b3468206b4e", user_name: "Finish", description: " Finish Power All in One" }, 
+            
+          ],
+          prefix: "/static/",
+        },
+        methods: {
+          update: function(event) {
+            console.log('updated')
+            console.log(this.elms[0].photo)
+          }
+        } 
+      });
+    </script> 
+  </body>
+
+</html>
+

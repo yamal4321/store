@@ -1,0 +1,97 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-slim-tabs@0.3.0/dist/vue-slim-tabs.js"></script>
+    <link rel="stylesheet"href="{% static 'front/styles.css' %}">
+  </head>
+
+  <body>
+    <div id="app">
+      <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% url 'front-home' %}"><img src="{% static 'front/logo.png' %}" style="max-height: 70px" class="py-2 px-2"></a>
+        </div>
+        <div class="navbar-menu" id="nav-links">
+          <div class="navbar-end">
+            <a class="navbar-item" href="{% url 'front-sell' %}">Продать</a>
+            <a class="navbar-item" href="{% url 'front-cart' %}">Корзина [[this.cart]]₽</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="section pt-4 pb-0">
+        <nav class="breadcrumb">
+        <ul>
+          <li><a href="{% url 'front-home' %}">Главная</a></li>
+          <li><a>Корзина</a></li>
+        </ul>
+        </nav>
+      </div>
+
+      <div class="section">
+        <ul>
+          <li v-for="(data, index) in elms">
+            <article class="media">
+              <figure class="media-left">
+                <img class="image is-64x64" :src="prefix + data.photo">
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                <p>
+                  <strong>
+                    <a :href="data.uuid" class="has-text-info">[[data.name]]</a>
+                  </strong>
+                  <br>
+                  [[data.description]]
+                  <br>
+                </p>
+                </div>
+              </div>
+              <div class="media-right">
+                <strong class="has-text-info">[[data.price]]₽</strong>
+                <button @click="remove_el(index)">X</button>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      Vue.use(vueSlimTabs);
+      const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+          elms: [
+            {%for el in context %}
+              { photo: "{{el.photo}}", name: "{{el.name}}", uuid: "products/{{el.uuid}}", user_name: "{{el.user_name}}", description: "{{el.description}}", votes: {{el.votes}}, price: "{{el.price}}"}, 
+            {%endfor%}
+          ],
+          cart: {{cart}}, 
+          prefix: "{% get_static_prefix %}front/",
+        },
+        methods: { 
+          remove_el(idx) {
+            var uuid = this.elms[idx].uuid;
+            if(this.elms.length == 1) { this.elms = []; this.cart=0; } else { this.cart -= Number(this.elms[idx].price); this.elms.splice(idx, 1); } 
+            fetch('', {
+              method: "POST",
+              body: JSON.stringify({ uuid: uuid.substring(9) }),
+              headers: { "Content-type": "application/json; charset=UTF-8" }
+            });
+          }, 
+        },
+      });
+    </script>
+  
+  </body>
+
+</html>
+

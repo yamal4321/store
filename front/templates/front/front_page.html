@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-slim-tabs@0.3.0/dist/vue-slim-tabs.js"></script>
+    <link rel="stylesheet"href="{% static 'front/styles.css' %}">
+  </head>
+
+  <body>
+    <div id="app">
+      <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% url 'front-home' %}"><img src="{% static 'front/logo.png' %}" style="max-height: 70px" class="py-2 px-2"></a>
+        </div>
+        <div class="navbar-menu" id="nav-links">
+          <div class="navbar-end">
+            <a class="navbar-item" href="{% url 'front-sell' %}">Продать</a>
+            <a class="navbar-item" href="{% url 'front-cart' %}">Корзина {{cart}}₽</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="section pt-4 pb-0">
+        <nav class="breadcrumb">
+        <ul>
+          <li><a>Главная</a></li>
+        </ul>
+        </nav>
+      </div>
+
+      <div class="section">
+        <ul>
+          <li v-for="(data, index) in this.sorted_elms">
+            <article class="media">
+              <figure class="media-left">
+                <img class="image is-64x64" :src="prefix+data.photo">
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                <p>
+                  <strong>
+                    <a :href="data.uuid" class="has-text-info">[[data.name]]</a>
+                    <span class="tag is-small">[[index+1]]</span>
+                  </strong>
+                  <br>
+                  [[data.description]]
+                  <br>
+                  <small class="is-size-7">
+                    Опубликовано: [[data.user_name]]
+                  </small>
+                </p>
+                </div>
+              </div>
+              <form method="post">
+                <div class="media-right">
+                  <span class="icon is-small">
+                    <i class="fa fa-chevron-up" :id="data.uuid" :idx="index" v-on:click="update"></i>
+                    <strong class="has-text-info">[[data.votes]]</strong>
+                  </span>
+                </div>
+              </form>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      Vue.use(vueSlimTabs);
+      const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+          elms: [
+            {%for el in context %}
+              { photo: "{{el.photo}}", name: "{{el.name}}", uuid: "products/{{el.uuid}}", user_name: "{{el.user_name}}", description: "{{el.description}}", votes: {{el.votes}}, price: "{{el.price}}"}, 
+            {%endfor%}
+          ],
+          prefix: "{% get_static_prefix %}front/",
+        },
+        methods: {
+          update: function(event) {
+            fetch('', {
+              method: "POST",
+              body: JSON.stringify({ uuid: event.target.id.substring(9) }),
+              headers: { "Content-type": "application/json; charset=UTF-8" }
+            });
+            const idx = event.target.attributes.idx.nodeValue
+            this.elms[idx]["votes"] += 1
+          }
+        },
+        computed: {
+          sorted_elms() {
+            return this.elms.sort((a, b) => { return -(a.votes-b.votes) });
+          },
+        },
+      });
+    </script> 
+  </body>
+
+</html>
