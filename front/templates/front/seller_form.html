@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  </head>
+
+  <body>
+    <nav class="navbar has-shadow is-white">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'front-home' %}"><img src="{% static 'front/logo.png' %}" style="max-height: 70px" class="py-2 px-2"></a>
+      </div>
+      <div class="navbar-menu" id="nav-links">
+        <div class="navbar-end">
+          <a class="navbar-item" href="{% url 'front-sell' %}">Продать</a>
+          <a class="navbar-item" href="{% url 'front-cart' %}">Корзина {{cart}}₽</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="section pt-4 pb-0">
+      <nav class="breadcrumb">
+      <ul>
+        <li><a href="{% url 'front-home' %}">Главная</a></li>
+        <li><a>Добавить товар</a></li>
+      </ul>
+      </nav>
+    </div>
+
+    
+    <section class="section">
+      <form method="post" enctype="multipart/form-data">
+        <div class="container">
+          <div class="field">
+            <label class="label">Имя продавца</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="Петя" name="seller">
+          </div>
+
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="example@mail.com" name="email">
+          </div>
+
+          <div class="field">
+            <label class="label">Название товара</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="Молочный Шоколад" name="name">
+          </div>
+
+          <div class="field">
+            <label class="label">Категория товара</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="Конфеты" name="category">
+          </div>
+
+          <div class="field">
+            <label class="label">Описание товара</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="&quot;Аленка&quot;" name="description">
+          </div>
+
+          <div class="field">
+            <label class="label">Цена</label>
+            <div class="control has-icons-left has-icons-right"><input class="input" type="text" placeholder="150" name="price">
+          </div>
+          
+          <div class="field">
+            <label class="label">Данные о продукте</label>
+            <div class="control">
+              <textarea class="textarea" placeholder="Купи меня" name="details"></textarea>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Информация о доставке</label>
+            <div class="control">
+              <textarea class="textarea" name="delivery"></textarea>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Контактные данные</label>
+            <div class="control">
+              <textarea class="textarea" name="contacts"></textarea>
+            </div>
+          </div>
+
+          <div class="file has-name">
+            <label class="file-label">
+              <input class="file-input" type="file" name="photo">
+              <span class="file-cta">
+                <span class="file-icon"> <i class="fas fa-upload"></i></span>
+                <span class="file-label">Фото товара</span>
+              </span>
+              <span class="file-name"></span>
+            </label>
+          </div>
+
+          <div class="field pt-4 has-text-centered">
+            <div class="control">
+              <button class="button is-success is-outlined is-large" name="Выставить" type="submit">Выставить</button>
+            </div>
+        </div>
+      </form>
+    </section>
+
+  </body>
+
+</html>
+

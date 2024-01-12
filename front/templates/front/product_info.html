@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-slim-tabs@0.3.0/dist/vue-slim-tabs.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% url 'front-home' %}"><img src="{% static 'front/logo.png' %}" style="max-height: 70px" class="py-2 px-2"></a> 
+        </div>
+        <div class="navbar-menu" id="nav-links"> 
+          <div class="navbar-end">
+            <a class="navbar-item" href="{% url 'front-sell' %}">Продать</a>
+            <a class="navbar-item" href="{% url 'front-cart' %}">Корзина {{cart}}₽</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="section pt-4 pb-0">
+        <nav class="breadcrumb">
+        <ul>
+          <li><a href="{% url 'front-home' %}">Главная</a></li>
+          <li><a>{{context.name}}</a></li>
+        </ul> 
+        </nav>
+      </div>
+
+      <section class="section">
+        <div class="container">
+          <div class="columns is-vcentered">
+            <div class="column is-3">
+              <h1 class="is-size-2 title">{{context.name}}</h1>
+              <p>{{context.description}}</p>
+            </div>
+            <div class="column is-5 has-text-centered">
+              <img src="{% get_static_prefix %}front/{{context.photo}}" class="px-1">
+            </div>
+            <form method="post"> 
+              <div class="column is-4">
+                <div class="is-size-2 mb-4">{{context.price}}₽</div>
+                <button class="button is-large" type="submit" name="cart" value="cart">Добавить в корзину</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="columns is-8 is-variable">
+            <div class="column is-7-tablet">
+              <div class="tabs is-boxed">
+                <ul>
+                  <li :class="active[0]" @click="toggle_description"><a>Информация о товаре</a></li>
+                  <li :class="active[1]" @click="toggle_delivery"><a>Информация о доставке</a></li>
+                  <li :class="active[2]" @click="toggle_contacts"><a>Контакты</a></li>
+                </ul>
+              </div>
+              <div class="px-2" id="tab-content">
+                <div id="product-details" :class="hidden[0]">
+                  <h3 class="is-size-5 title">Информация о товаре</h3>
+                  <p>{{context.details}}</p>
+                </div>
+              </div>
+              <div class="px-2" id="tab-content">
+                <div id="delivery-information" :class="hidden[1]">
+                  <h3 class="is-size-5 title">Информация о доставке</h3>
+                  <p>{{context.delivery}}</p>
+                </div>
+              </div> 
+              <div class="px-2" id="tab-content">
+                <div id="contacts" :class="hidden[2]">
+                  <h3 class="is-size-5 title">Контакты</h3>
+                  <p>{{context.contacts}}</p>
+                </div>
+              </div> 
+            <DIV CLASS="COLUMN IS-5-TABLET"> </DIV>
+            </DIV>
+          </DIV>
+        </DIV>
+      </section>
+    </div>
+
+    <script>
+    Vue.use(vueSlimTabs);
+    const app = new Vue({
+      delimiters: ['[[', ']]'],
+      el: '#app',
+      data: {
+        active: [],
+        hidden: []
+      },
+      methods: { 
+        toggle_description() {
+          this.reset()
+          this.active[0] = "is-active"
+          this.hidden[0] = ""
+        },
+        toggle_contacts() {
+          this.reset()
+          this.active[2] = "is-active"
+          this.hidden[2] = ""
+        },
+        toggle_delivery() {
+          this.reset()
+          this.active[1] = "is-active"
+          this.hidden[1] = ""
+        },
+        reset() {
+          this.active = Array(3).fill("")
+          this.hidden = Array(3).fill("is-hidden")
+        }
+      },
+      created() {
+        this.reset()
+      }
+    });
+    </script>
+
+  </body>
+
+</html>

@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet"href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-slim-tabs@0.3.0/dist/vue-slim-tabs.js"></script>
+    <link rel="stylesheet"href="{% static 'front/styles.css' %}">
+  </head>
+
+  <body>
+    <div id="app">
+      <nav class="navbar has-shadow is-white">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% url 'front-home' %}"><img src="{% static 'front/logo.png' %}" style="max-height: 70px" class="py-2 px-2"></a>
+        </div>
+
+        <div class="navbar-menu" id="nav-links">
+          <div class="navbar-end">
+            <a class="navbar-item">Рекомендации</a>
+            <a class="navbar-item" href="{% url 'front-sell' %}">Продать</a>
+            <a class="navbar-item" href="{% url 'front-cart' %}">Корзина {{cart}}₽</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="section pt-4 pb-0">
+        <nav class="breadcrumb">
+        <ul>
+          <li><a href="{% url 'front-home' %}">Главная</a></li>
+          <li><a>Рекоммендации</a></li>
+        </ul>
+        </nav>
+      </div>
+
+      <div class="section">
+        <ul>
+          <li v-for="(data, index) in this.sorted_elms">
+            <article class="media">
+              <figure class="media-left">
+                <img class="image is-64x64" :src="prefix+data.photo">
+              </figure>
+              <div class="media-content">
+                <div class="content">
+                <p>
+                  <strong>
+                    <a :href="data.uuid" class="has-text-info" :id=data.category>[[data.name]]</a>
+                  </strong>
+                  <br>
+                  [[data.description]]
+                  <br>
+                  <small class="is-size-7">
+                    Опубликовано: [[data.user_name]]
+                  </small>
+                  <br>
+                 <span class="tag" :id="data.category"> [[data.category]] </span> 
+                </p>
+                </div>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      Vue.use(vueSlimTabs);
+      const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+          elms: [
+            {%for el in context %}
+              { category: "{{el.category}}", photo: "{{el.photo}}", name: "{{el.name}}", uuid: "products/{{el.uuid}}", user_name: "{{el.user_name}}", description: "{{el.description}}", votes: {{el.votes}}, price: "{{el.price}}"}, 
+            {%endfor%}
+          ],
+          prefix: "{% get_static_prefix %}front/",
+        },
+        methods: {
+        },
+        computed: {
+          sorted_elms() {
+            return this.elms
+          },
+        },
+      });
+    </script> 
+  </body>
+
+</html>
